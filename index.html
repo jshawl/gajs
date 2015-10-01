@@ -3,20 +3,36 @@
   <head>
     <title>Dabble!</title>
     <style>
+      body{
+        margin:0;
+      }
       .js, .console {
         position:absolute;
 	width:50%;
 	height:100%;
 	left:0;
+	padding:1em;
 	top:0;
+      }
+      .controls{
+        position:absolute;
+	left:50%;
+	top:0;
+	transform: translateX(-100%);
+	z-index:2;
       }
       .console{
         left: 50%;
 	border-left: 1px solid #e7e7e7;
       }
     </style> 
+    <link rel="stylesheet" type="text/css" href="css/codemirror.css">
+    <script src="js/codemirror-compressed.js"></script>
   </head>
   <body>
+    <div class="controls">
+      <a href="#" class="js-run">run</a>
+    </div>
     <div class='js'>
       js
     </div>
@@ -24,7 +40,23 @@
       console
     </div>
     <script>
-    
+      var myCodeMirror = CodeMirror(document.querySelector(".js"), {
+	  value: "function hello(){\n  return 'hey there';\n}\n\nhello();",
+	    lineNumbers: true,
+	    mode:  "javascript"
+	  });
+      var run = document.querySelector(".js-run")
+      var consoleArea = document.querySelector(".console")
+      run.addEventListener("click", function( event ){
+        event.preventDefault() 
+	var val = myCodeMirror.getValue()
+	var evaled
+	try {
+	  consoleArea.innerHTML = eval(val)
+	} catch (e){
+	  consoleArea.innerHTML = e
+	}
+      })
     </script>
   </body>
 </html>
