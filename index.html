@@ -67,9 +67,9 @@
 	},1000) 
       })
       function save(val){
-        localStorage.setItem("gajs", val) 
+	window.location.hash = btoa(val)
       }
-      var value = localStorage.getItem("gajs") || "function hello(){\n  return 'hey there';\n}\n\nhello();"
+      var value = atob(window.location.hash.substr(1)) || "function hello(){\n  return 'hey there';\n}\n\nhello();"
       var myCodeMirror = CodeMirror(document.querySelector(".js"), {
 	value: value,
 	lineNumbers: true,
@@ -79,8 +79,10 @@
       var cons = new Repl( repl );
       cons.eval( myCodeMirror.getValue() )
       run.addEventListener("click", function(e){
+	e.preventDefault()
 	cons.eval( myCodeMirror.getValue() )
       }.bind(this))
+
     </script>
   </body>
 </html>
