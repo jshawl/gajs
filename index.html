@@ -23,11 +23,23 @@
       }
       .console{
         left: 50%;
+	font-family: monospace;
 	border-left: 1px solid #e7e7e7;
+      }
+      .eval::before{
+	content:'> ';
+      }
+      input{
+	outline: none;
+	border:none;
+      }
+      .error{
+	color: red;
       }
     </style> 
     <link rel="stylesheet" type="text/css" href="css/codemirror.css">
     <script src="js/codemirror-compressed.js"></script>
+    <script src="js/repl.js"></script>
   </head>
   <body>
     <div class="controls">
@@ -41,14 +53,12 @@
       var consoleArea = document.querySelector(".console")
       function evaluate( event ){
         if( event ) event.preventDefault() 
-	var val = myCodeMirror.getValue()
 	try {
 	  consoleArea.innerHTML = eval(val)
 	} catch (e){
 	  consoleArea.innerHTML = e
 	}
       }
-      run.addEventListener("click", evaluate)
       var isTyping
       document.body.addEventListener("keyup", function(event){
 	isTyping = clearTimeout( isTyping )
@@ -65,8 +75,12 @@
 	lineNumbers: true,
 	mode:  "javascript"
       });
-
-      evaluate()
+      var repl = document.querySelector('.console');
+      var cons = new Repl( repl );
+      cons.eval( myCodeMirror.getValue() )
+      run.addEventListener("click", function(e){
+	cons.eval( myCodeMirror.getValue() )
+      }.bind(this))
     </script>
   </body>
 </html>
