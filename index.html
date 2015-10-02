@@ -33,29 +33,40 @@
     <div class="controls">
       <a href="#" class="js-run">run</a>
     </div>
-    <div class='js'>
-      js
-    </div>
+    <div class='js'></div>
     <div class='console'>
     </div>
     <script>
-      var myCodeMirror = CodeMirror(document.querySelector(".js"), {
-	  value: "function hello(){\n  return 'hey there';\n}\n\nhello();",
-	    lineNumbers: true,
-	    mode:  "javascript"
-	  });
       var run = document.querySelector(".js-run")
       var consoleArea = document.querySelector(".console")
-      run.addEventListener("click", function( event ){
-        event.preventDefault() 
+      function evaluate( event ){
+        if( event ) event.preventDefault() 
 	var val = myCodeMirror.getValue()
-	var evaled
 	try {
 	  consoleArea.innerHTML = eval(val)
 	} catch (e){
 	  consoleArea.innerHTML = e
 	}
+      }
+      run.addEventListener("click", evaluate)
+      var isTyping
+      document.body.addEventListener("keyup", function(event){
+	isTyping = clearTimeout( isTyping )
+        isTyping = setTimeout(function(e){
+	  save( myCodeMirror.getValue() )
+	},1000) 
       })
+      function save(val){
+        localStorage.setItem("gajs", val) 
+      }
+      var value = localStorage.getItem("gajs") || "function hello(){\n  return 'hey there';\n}\n\nhello();"
+      var myCodeMirror = CodeMirror(document.querySelector(".js"), {
+	value: value,
+	lineNumbers: true,
+	mode:  "javascript"
+      });
+
+      evaluate()
     </script>
   </body>
 </html>
